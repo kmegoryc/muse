@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Muse</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <!-- P5 -->
+    <script src="libraries/p5.js" type="text/javascript"></script>
+    <script src="libraries/p5.dom.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.js" type="text/javascript"></script>
+    <!-- OSC -->
+    <script src="bower_components/osc.js/dist/osc-browser.min.js"></script>
+    <!-- SEMANTIC -->
+    <link rel="stylesheet" type="text/css" href="dist/semantic.min.css">
+    <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+    <script src="dist/semantic.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/site.css">
+    <!-- SOCKET -->
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    
+    var socket = io.connect();
+    
+    socket.on('connect', function() {
+    console.log("Connected");
+    });
+    </script>
+  </head>
+  <body>
+    <div class="ui inverted segment">
+      <div class="ui inverted secondary menu">
+        <a class="item">
+          Muse
+        </a>
+      </div>
+    </div>
+    <div id="options">
+      <!-- <select id="color" class="ui search dropdown">
+        <option value="">Sketch</option>
+        <option value="0">Flower</option>
+      </select> -->
+    </div>
+    <div class="page">
+      <a href="sketch1.html">
+        <div class="sketch1"></div></a>
+      <a href="sketch2.html">
+        <div class="sketch2"></div></a>
+    </div>
+    <div class="page">
+      <a href="sketch3.html">
+        <div class="sketch3"></div></a>
+      <a href="sketch4.html">
+        <div class="sketch4"></div></a>
+    </div>
+  </body>
+</html>

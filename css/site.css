@@ -6,7 +6,7 @@ body {
 	margin: 60px;
 }
 .page {
-	margin: 40px;
+	margin: 60px;
 	display: flex;  /* This centers our sketch horizontally. */
 	justify-content: center;  /* This centers our sketch vertically. */
 	align-items: center;
@@ -14,7 +14,7 @@ body {
 .sketch1, .sketch2, .sketch3, .sketch4 {
 	width: 500px;
 	height: 200px;
-	margin: 40px;
+	margin: 20px;
 	border: 1px solid black;
 }
 .ui.inverted.segment {

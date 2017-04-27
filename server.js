@@ -1,42 +1,43 @@
-// HTTP PORTION
-var http = require('http');
-var fs = require('fs');
-var httpServer = http.createServer(requestHandler);
-var url = require('url');
-httpServer.listen(8080);
+var OSC_RECIEVE_PORT = 6448
+var WS_PORT=4243
 
-function requestHandler(req, res) {
+var osc = require('node-osc');
 
-	var parsedUrl = url.parse(req.url);
-	console.log("The Request is: " + parsedUrl.pathname);
-		
-	fs.readFile(__dirname + parsedUrl.pathname, 
-		function (err, data) {
-			if (err) {
-				res.writeHead(500);
-				return res.end('Error loading ' + parsedUrl.pathname);
-			}
-			res.writeHead(200);
-			res.end(data);
-  		}
-  	);
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-}
+var open_sockets = [];
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
+app.use(express.static('public'));
 
 
+io.on('connection', function(socket){
+  console.log('a user connected');
+  open_sockets.push(socket);
+  socket.on('disconnect', function(){
+        //remove this socket from our list of open sockets
+        open_sockets = open_sockets.filter(function(item){
+              return item != socket;
+        });
+  });
+});
 
-// WEBSOCKET PORTION
-var io = require('socket.io').listen(httpServer);
+http.listen(WS_PORT, function(){
+  console.log('listening for WEBSOCKET connections on *:'+WS_PORT);
+});
 
-io.sockets.on('connection', 
-
-	function (socket) {
-	
-		console.log("We have a new client: " + socket.id);
-
-
-		socket.on('disconnect', function() {
-			console.log("Client has disconnected " + socket.id);
-		});
-	}
-);
+var oscServer = new osc.Server(OSC_RECIEVE_PORT, '0.0.0.0');
+console.log('listening for OSC packets on *:'+OSC_RECIEVE_PORT);
+oscServer.on("message", function (msg, rinfo) {
+      console.log("OSC message received:");
+      console.log(msg);
+      open_sockets.forEach(function(socket){
+            socket.emit("osc", msg);
+      })
+});

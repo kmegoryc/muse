@@ -2,19 +2,59 @@ body {
 	padding: 0;
 	margin: 0;
 }
-#options {
+
+.wrapper {
 	margin: 60px;
 }
+
 .page {
 	width: 100%;
 	margin: auto;
 	display: inline-block;
 	text-align: center; 
 }
-.sketch1, .sketch2 {
+
+.category {
 	margin: 20px;
 }
+
+.sketch1, .sketch2 {
+	margin: 20px;
+	width: 600px;
+}
+
 .ui.inverted.segment {
 	border-radius: 0;
 	background-color: #ed225d;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: black;
+    display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: red;
+}
+
+.inputfile + label {
+	cursor: pointer; 
+}
+
+.inputfile:focus + label {
+	outline: 1px dotted #000;
+	outline: -webkit-focus-ring-color auto 5px;
 }

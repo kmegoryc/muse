@@ -1,20 +1,9 @@
-/*
-Noisy rainbow
-
-Controls:
-	- Move the mouse along the lines to interact with it.
-
-Author:
-  Jason Labbe
-
-Site:
-  jasonlabbe3d.com
-*/
+var soundString;
 
 var socket = io();
 
-var maxX;
-var maxY;
+var maxX = 800;
+var maxY = 500;
 
 var right_x_ness;
 var right_y_ness;
@@ -26,7 +15,6 @@ var restSize = 3;
 var allParticles = [];
 var t;
 var globalHue = 0;
-
 
 function Particle(x, y) {
   this.pos = new p5.Vector(x, y);
@@ -43,19 +31,19 @@ function Particle(x, y) {
   
   this.move = function() {
     // Shift particle to the left.
-    this.pos.x -= 1;
-    this.target.x -= 1;
+    this.pos.x -= 14;
+    this.target.x -= 7;
     
-    var d = dist(right_x_ness, right_y_ness, this.pos.x, this.pos.y);
+    var d = dist(map(right_x_ness, 0, maxX, 0, windowWidth), map(right_y_ness, 0, maxY, 0, windowHeight), this.pos.x, this.pos.y);
     
     // Resolve collision with mouse.
     if (d < 200) {
-      var mousePos = new p5.Vector(right_x_ness, right_y_ness);
+      var mousePos = new p5.Vector(map(right_x_ness, 0, maxX, 0, windowWidth), map(right_y_ness, 0, maxY, 0, windowHeight));
       
       var vec = new p5.Vector(this.pos.x, this.pos.y);
       vec.sub(mousePos);
       vec.normalize();
-      vec.mult(0.6);
+      vec.mult(0.7);
       this.acc.add(vec);
     }
     
@@ -68,7 +56,9 @@ function Particle(x, y) {
     if (targetDist < 5) {
       // When it gets close enough, decrease the multiplier so it can settle!
       seek.mult(0.5*map(targetDist, 5, 0, 1, 0));
-    } else {
+    } 
+
+    else {
       seek.mult(0.5);
     }
     
@@ -84,9 +74,24 @@ function Particle(x, y) {
   }
 }
 
+function preload() {
+  soundString = document.getElementById("image-file").value
+  console.log(soundString);
+  mySound = loadSound('assets/birthday.mp3');
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  mySound.setVolume(0.1);
+  mySound.play();
+
+  //instance of amplitude
+  amplitude = new p5.Amplitude();
   
   colorMode(HSB, 255);
   
@@ -111,19 +116,9 @@ function draw() {
         right_x_ness = msg[4];
         right_y_ness = msg[5];
         right_z_ness = msg[6];
-
-        /*if(right_x_ness > maxX) {
-          maxX = right_x_ness;
-        }
-        if(right_y_ness > maxY) {
-          maxY = right_y_ness;
-        }
-
-        console.log("MaxX: "  + maxX);
-        console.log("MaxY: "  + maxY);*/
   });
 
-  ellipse(right_x_ness, right_y_ness, right_z_ness, right_z_ness);
+  ellipse(map(right_x_ness, 0, maxX, 0, windowWidth), map(right_y_ness, 0, maxY, 0, windowHeight), right_z_ness);
   
   for (var i = 0; i < allParticles.length; i++) {
     allParticles[i].move();
@@ -147,14 +142,18 @@ function draw() {
     }
   }
   
+  var level = amplitude.getLevel();
+  var level_height = map(level, 0, 1, 1000, 10000);
+  
   // Spawn a new particle.
   if (t % steps == 0) {
-    var y = height/4+noise(t*0.005)*500;
+    //console.log(t)
+    var y = height/6+noise(level_height*0.1)*600;
     allParticles.push(new Particle(width, y));
   }
   t += 1;
   
   noStroke();
   fill(255);
-  text("Move your hand over the lines", width/2, 100);
+  text("Control the circle (x, y, z) with your pointer finger.", width/2, 100);
 }
